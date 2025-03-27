@@ -24,9 +24,9 @@ import {
   Pie,
   Cell,
 } from "recharts"
-import { School, Users, GraduationCap, Package, ChevronRight } from "lucide-react"
+import { School, Users, GraduationCap, Package, ChevronRight, ArrowLeft, Building2 } from "lucide-react"
 import { useState } from "react"
-
+import { useRouter } from "next/navigation"
 // Mock data for districtwise statistics
 const districtData = [
   {
@@ -139,17 +139,31 @@ const coverageData = [
 ]
 
 export default function ProgramDataDistrictwise() {
-  const [selectedDistrict, setSelectedDistrict] = useState(null)
+  const router = useRouter()
+  const [selectedDistrict, setSelectedDistrict] = useState<string | null>(null)
+  const [selectedBlock, setSelectedBlock] = useState<string | null>(null)
+
+  const handleBlockClick = (district: string, block: string) => {
+    setSelectedDistrict(district)
+    setSelectedBlock(block)
+  }
+
+  // Get block data from districtData
+  const getBlockData = (district: string, block: string) => {
+    const districtInfo = districtData.find(d => d.district === district)
+    if (!districtInfo) return null
+    return districtInfo.blocks.find(b => b.name === block)
+  }
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 px-4">
       <div>
         <h1 className="text-3xl font-bold tracking-tight">Program Data - Districtwise</h1>
         <p className="text-muted-foreground">Comprehensive overview of program implementation across districts</p>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <Card className="bg-white shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Schools</CardTitle>
             <School className="h-4 w-4 text-muted-foreground" />
@@ -159,7 +173,8 @@ export default function ProgramDataDistrictwise() {
             <p className="text-xs text-muted-foreground">Across all districts</p>
           </CardContent>
         </Card>
-        <Card>
+
+        <Card className="bg-white shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Students</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
@@ -169,7 +184,8 @@ export default function ProgramDataDistrictwise() {
             <p className="text-xs text-muted-foreground">Enrolled students</p>
           </CardContent>
         </Card>
-        <Card>
+
+        <Card className="bg-white shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Teachers</CardTitle>
             <GraduationCap className="h-4 w-4 text-muted-foreground" />
@@ -179,7 +195,8 @@ export default function ProgramDataDistrictwise() {
             <p className="text-xs text-muted-foreground">Trained teachers</p>
           </CardContent>
         </Card>
-        <Card>
+
+        <Card className="bg-white shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Assets</CardTitle>
             <Package className="h-4 w-4 text-muted-foreground" />
@@ -191,13 +208,13 @@ export default function ProgramDataDistrictwise() {
         </Card>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2">
-        <Card>
+      <div className="grid gap-4 md:grid-cols-2">
+        <Card className="bg-white shadow-sm">
           <CardHeader>
             <CardTitle>District-wise Coverage</CardTitle>
             <CardDescription>Program coverage across districts</CardDescription>
           </CardHeader>
-          <CardContent className="h-[350px]">
+          <CardContent className="h-[400px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
                 data={districtData}
@@ -208,7 +225,7 @@ export default function ProgramDataDistrictwise() {
                   bottom: 5,
                 }}
               >
-                <CartesianGrid strokeDasharray="3 3" />
+                <CartesianGrid strokeDasharray="3 3" stroke="#eee" />
                 <XAxis dataKey="district" />
                 <YAxis />
                 <Tooltip formatter={(value) => [`${value}%`, "Coverage"]} />
@@ -219,12 +236,12 @@ export default function ProgramDataDistrictwise() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-white shadow-sm">
           <CardHeader>
             <CardTitle>Overall Program Coverage</CardTitle>
             <CardDescription>Schools covered vs remaining</CardDescription>
           </CardHeader>
-          <CardContent className="h-[350px]">
+          <CardContent className="h-[400px]">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
@@ -232,16 +249,16 @@ export default function ProgramDataDistrictwise() {
                   cx="50%"
                   cy="50%"
                   labelLine={false}
-                  outerRadius={100}
-                  fill="#8884d8"
+                  outerRadius={150}
+                  fill="#4ade80"
                   dataKey="value"
-                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                  label={({ name, value, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
                 >
                   {coverageData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Pie>
-                <Tooltip formatter={(value) => [value, "Schools"]} />
+                <Tooltip />
                 <Legend />
               </PieChart>
             </ResponsiveContainer>
@@ -249,7 +266,7 @@ export default function ProgramDataDistrictwise() {
         </Card>
       </div>
 
-      <Card>
+      <Card className="bg-white shadow-sm">
         <CardHeader>
           <CardTitle>District-wise Statistics</CardTitle>
           <CardDescription>Click on any district to view detailed information</CardDescription>
@@ -262,12 +279,12 @@ export default function ProgramDataDistrictwise() {
                   <div className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent cursor-pointer transition-all duration-200">
                     <div className="flex items-center gap-4">
                       <div className="p-2 bg-primary/10 rounded-full">
-                        <School className="h-5 w-5 text-primary" />
+                        <Building2 className="h-4 w-4 text-primary" />
                       </div>
                       <div>
-                        <h3 className="font-medium text-lg">{district.district}</h3>
+                        <h3 className="font-medium">{district.district}</h3>
                         <p className="text-sm text-muted-foreground">
-                          {district.totalSchools} schools • {district.totalStudents.toLocaleString()} students • {district.totalTeachers.toLocaleString()} teachers
+                          {district.totalSchools} schools • {district.totalStudents.toLocaleString()} students
                         </p>
                       </div>
                     </div>
@@ -277,7 +294,7 @@ export default function ProgramDataDistrictwise() {
                         <div className="text-xs text-muted-foreground">Coverage</div>
                       </div>
                       <Progress value={district.coverage} className="w-24" />
-                      <ChevronRight className="h-5 w-5 text-muted-foreground" />
+                      <ChevronRight className="h-4 w-4 text-muted-foreground" />
                     </div>
                   </div>
                 </DialogTrigger>
@@ -328,7 +345,11 @@ export default function ProgramDataDistrictwise() {
                     <h4 className="font-semibold text-sm mb-3">Block-wise Statistics</h4>
                     <div className="space-y-3">
                       {district.blocks.map((block) => (
-                        <div key={block.name} className="p-3 border rounded-lg">
+                        <div 
+                          key={block.name} 
+                          className="p-3 border rounded-lg hover:bg-accent cursor-pointer transition-all duration-200"
+                          onClick={() => handleBlockClick(district.district, block.name)}
+                        >
                           <div className="flex items-center justify-between mb-2">
                             <h5 className="font-medium text-sm">{block.name}</h5>
                             <div className="flex items-center gap-2">
@@ -371,6 +392,100 @@ export default function ProgramDataDistrictwise() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Blockwise Statistics Dialog */}
+      <Dialog open={!!selectedBlock} onOpenChange={() => setSelectedBlock(null)}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <div className="flex items-center gap-4">
+              <button 
+                onClick={() => setSelectedBlock(null)}
+                className="text-primary hover:text-primary/80"
+              >
+                <ArrowLeft className="h-5 w-5" />
+              </button>
+              <div>
+                <DialogTitle className="text-xl">Blockwise Statistics</DialogTitle>
+                <p className="text-sm text-muted-foreground">
+                  {selectedDistrict} - {selectedBlock}
+                </p>
+              </div>
+            </div>
+          </DialogHeader>
+
+          {selectedBlock && selectedDistrict && (
+            <>
+              {(() => {
+                const blockInfo = getBlockData(selectedDistrict, selectedBlock)
+                if (!blockInfo) return null
+
+                return (
+                  <>
+                    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mt-4">
+                      <Card>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                          <CardTitle className="text-sm font-medium">Total Schools</CardTitle>
+                          <School className="h-4 w-4 text-muted-foreground" />
+                        </CardHeader>
+                        <CardContent>
+                          <div className="text-2xl font-bold">{blockInfo.schools}</div>
+                          <p className="text-xs text-muted-foreground">Schools in this block</p>
+                        </CardContent>
+                      </Card>
+                      <Card>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                          <CardTitle className="text-sm font-medium">Total Students</CardTitle>
+                          <Users className="h-4 w-4 text-muted-foreground" />
+                        </CardHeader>
+                        <CardContent>
+                          <div className="text-2xl font-bold">{blockInfo.students.toLocaleString()}</div>
+                          <p className="text-xs text-muted-foreground">Enrolled students</p>
+                        </CardContent>
+                      </Card>
+                      <Card>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                          <CardTitle className="text-sm font-medium">Total Teachers</CardTitle>
+                          <GraduationCap className="h-4 w-4 text-muted-foreground" />
+                        </CardHeader>
+                        <CardContent>
+                          <div className="text-2xl font-bold">{blockInfo.teachers.toLocaleString()}</div>
+                          <p className="text-xs text-muted-foreground">Trained teachers</p>
+                        </CardContent>
+                      </Card>
+                      <Card>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                          <CardTitle className="text-sm font-medium">Total Assets</CardTitle>
+                          <Package className="h-4 w-4 text-muted-foreground" />
+                        </CardHeader>
+                        <CardContent>
+                          <div className="text-2xl font-bold">{blockInfo.assets.toLocaleString()}</div>
+                          <p className="text-xs text-muted-foreground">Distributed assets</p>
+                        </CardContent>
+                      </Card>
+                    </div>
+
+                    <Card className="mt-4">
+                      <CardHeader>
+                        <CardTitle>Program Coverage</CardTitle>
+                        <CardDescription>Overall coverage of the program in this block</CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="flex items-center gap-3">
+                          <Progress value={blockInfo.coverage} className="flex-1" />
+                          <span className="text-base font-bold">{blockInfo.coverage}%</span>
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {blockInfo.coverage >= 80 ? "Excellent coverage" : blockInfo.coverage >= 60 ? "Good coverage" : "Needs improvement"}
+                        </p>
+                      </CardContent>
+                    </Card>
+                  </>
+                )
+              })()}
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   )
 } 

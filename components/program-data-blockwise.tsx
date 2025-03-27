@@ -80,14 +80,14 @@ export default function ProgramDataBlockwise() {
   const [selectedBlock, setSelectedBlock] = useState(null)
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 px-4">
       <div>
         <h1 className="text-3xl font-bold tracking-tight">Program Data - Blockwise</h1>
         <p className="text-muted-foreground">Detailed program implementation statistics by blocks</p>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <Card className="bg-white shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Blocks</CardTitle>
             <MapPin className="h-4 w-4 text-muted-foreground" />
@@ -95,10 +95,10 @@ export default function ProgramDataBlockwise() {
           <CardContent>
             <div className="text-2xl font-bold">5</div>
             <p className="text-xs text-muted-foreground">Across 3 districts</p>
-            <Progress value={100} className="mt-2" />
           </CardContent>
         </Card>
-        <Card>
+
+        <Card className="bg-white shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Schools</CardTitle>
             <School className="h-4 w-4 text-muted-foreground" />
@@ -106,10 +106,10 @@ export default function ProgramDataBlockwise() {
           <CardContent>
             <div className="text-2xl font-bold">510</div>
             <p className="text-xs text-muted-foreground">Average 102 schools per block</p>
-            <Progress value={85} className="mt-2" />
           </CardContent>
         </Card>
-        <Card>
+
+        <Card className="bg-white shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Students</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
@@ -117,10 +117,10 @@ export default function ProgramDataBlockwise() {
           <CardContent>
             <div className="text-2xl font-bold">51,000</div>
             <p className="text-xs text-muted-foreground">Average 100 students per school</p>
-            <Progress value={90} className="mt-2" />
           </CardContent>
         </Card>
-        <Card>
+
+        <Card className="bg-white shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Teachers</CardTitle>
             <GraduationCap className="h-4 w-4 text-muted-foreground" />
@@ -128,18 +128,17 @@ export default function ProgramDataBlockwise() {
           <CardContent>
             <div className="text-2xl font-bold">2,550</div>
             <p className="text-xs text-muted-foreground">1:20 teacher-student ratio</p>
-            <Progress value={88} className="mt-2" />
           </CardContent>
         </Card>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2">
-        <Card>
+      <div className="grid gap-4 md:grid-cols-2">
+        <Card className="bg-white shadow-sm">
           <CardHeader>
             <CardTitle>Block-wise Coverage</CardTitle>
             <CardDescription>Program coverage across blocks</CardDescription>
           </CardHeader>
-          <CardContent className="h-[350px]">
+          <CardContent className="h-[400px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
                 data={blockData}
@@ -150,7 +149,7 @@ export default function ProgramDataBlockwise() {
                   bottom: 5,
                 }}
               >
-                <CartesianGrid strokeDasharray="3 3" />
+                <CartesianGrid strokeDasharray="3 3" stroke="#eee" />
                 <XAxis dataKey="block" />
                 <YAxis />
                 <Tooltip formatter={(value) => [`${value}%`, "Coverage"]} />
@@ -161,12 +160,12 @@ export default function ProgramDataBlockwise() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-white shadow-sm">
           <CardHeader>
             <CardTitle>Schools & Students Distribution</CardTitle>
             <CardDescription>Distribution of schools and students across blocks</CardDescription>
           </CardHeader>
-          <CardContent className="h-[350px]">
+          <CardContent className="h-[400px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
                 data={blockData}
@@ -177,7 +176,7 @@ export default function ProgramDataBlockwise() {
                   bottom: 5,
                 }}
               >
-                <CartesianGrid strokeDasharray="3 3" />
+                <CartesianGrid strokeDasharray="3 3" stroke="#eee" />
                 <XAxis dataKey="block" />
                 <YAxis yAxisId="left" />
                 <YAxis yAxisId="right" orientation="right" />
@@ -191,7 +190,7 @@ export default function ProgramDataBlockwise() {
         </Card>
       </div>
 
-      <Card>
+      <Card className="bg-white shadow-sm">
         <CardHeader>
           <CardTitle>Block-wise Statistics</CardTitle>
           <CardDescription>Click on any block to view detailed information</CardDescription>

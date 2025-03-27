@@ -339,9 +339,9 @@ export default function DashboardLayout({ children, className }: DashboardLayout
             </div>
           </header>
 
-          <div className="flex-1 p-4 overflow-auto w-full">
+          <div className="flex-1 overflow-auto w-full">
             <div className={`w-full h-full max-w-none ${className || ''}`}>
-              <Breadcrumb className="mb-4">
+              <Breadcrumb className="mb-4 px-4">
                 <BreadcrumbList>
                   <BreadcrumbItem>
                     <BreadcrumbLink
@@ -369,7 +369,7 @@ export default function DashboardLayout({ children, className }: DashboardLayout
                 </BreadcrumbList>
               </Breadcrumb>
 
-              <main className="w-full h-full flex-1 p-0 m-0">{children}</main>
+              <main className="w-full h-full flex-1">{children}</main>
             </div>
           </div>
         </div>
